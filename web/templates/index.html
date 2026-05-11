@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>SAP Estudio</title>
+    <link rel="stylesheet" href="/static/styles.css">
+  </head>
+  <body>
+    <main class="layout">
+      <header class="header">
+        <div>
+          <p class="eyebrow">SAP Estudio</p>
+          <h1>Documentos enviados a clientes</h1>
+        </div>
+        <form class="search" method="get">
+          <input name="cliente" value="{{ cliente }}" placeholder="Buscar cliente">
+          <button type="submit">Buscar</button>
+        </form>
+      </header>
+
+      <section class="summary">
+        <div>
+          <span class="label">Clientes</span>
+          <strong>{{ clientes | length }}</strong>
+        </div>
+        <div>
+          <span class="label">Documentos visibles</span>
+          <strong>{{ facturas | length }}</strong>
+        </div>
+      </section>
+
+      <section class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              {% for column in columns %}
+              <th>{{ column }}</th>
+              {% endfor %}
+            </tr>
+          </thead>
+          <tbody>
+            {% for factura in facturas %}
+            <tr>
+              {% for column in columns %}
+              <td>{{ factura[column] }}</td>
+              {% endfor %}
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </section>
+    </main>
+  </body>
+</html>
