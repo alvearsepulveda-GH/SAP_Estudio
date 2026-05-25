@@ -14,6 +14,7 @@ data/processed/*
 __pycache__/
 *.pyc
 *.pyo
+*.egg-info/
 .pytest_cache/
 .mypy_cache/
 
@@ -27,6 +28,10 @@ venv/
 # Sistema operativo
 .DS_Store
 Thumbs.db
+
+# R / notebooks personales
+.Rhistory
+notebooks/cv.ipynb
 
 # IDEs
 .vscode/

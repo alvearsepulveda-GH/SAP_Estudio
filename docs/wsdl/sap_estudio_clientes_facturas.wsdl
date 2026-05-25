@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions
+    xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+    xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    xmlns:tns="urn:sap-estudio:clientes-facturas"
+    targetNamespace="urn:sap-estudio:clientes-facturas"
+    name="SapEstudioClientesFacturas">
+
+  <wsdl:types>
+    <xsd:schema
+        targetNamespace="urn:sap-estudio:clientes-facturas"
+        elementFormDefault="qualified">
+
+      <xsd:element name="ConsultarClienteFacturasRequest">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="CodigoCliente" type="xsd:string" minOccurs="0"/>
+            <xsd:element name="FechaDesde" type="xsd:date" minOccurs="0"/>
+            <xsd:element name="FechaHasta" type="xsd:date" minOccurs="0"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+
+      <xsd:element name="ConsultarClienteFacturasResponse">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="Clientes" type="tns:ClienteFacturas" minOccurs="0" maxOccurs="unbounded"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+
+      <xsd:complexType name="ClienteFacturas">
+        <xsd:sequence>
+          <xsd:element name="CodigoCliente" type="xsd:string"/>
+          <xsd:element name="Nombre" type="xsd:string"/>
+          <xsd:element name="Facturas" type="tns:Factura" minOccurs="0" maxOccurs="unbounded"/>
+        </xsd:sequence>
+      </xsd:complexType>
+
+      <xsd:complexType name="Factura">
+        <xsd:sequence>
+          <xsd:element name="NumeroFactura" type="xsd:string"/>
+          <xsd:element name="FolioFactura" type="xsd:string" minOccurs="0"/>
+          <xsd:element name="FechaEnvio" type="xsd:date" minOccurs="0"/>
+          <xsd:element name="DireccionesCorreo" type="tns:DireccionCorreo" minOccurs="0" maxOccurs="3"/>
+        </xsd:sequence>
+      </xsd:complexType>
+
+      <xsd:complexType name="DireccionCorreo">
+        <xsd:sequence>
+          <xsd:element name="Email" type="xsd:string"/>
+        </xsd:sequence>
+      </xsd:complexType>
+
+      <xsd:element name="SapEstudioFault">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="Codigo" type="xsd:string"/>
+            <xsd:element name="Mensaje" type="xsd:string"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+    </xsd:schema>
+  </wsdl:types>
+
+  <wsdl:message name="ConsultarClienteFacturasInput">
+    <wsdl:part name="parameters" element="tns:ConsultarClienteFacturasRequest"/>
+  </wsdl:message>
+
+  <wsdl:message name="ConsultarClienteFacturasOutput">
+    <wsdl:part name="parameters" element="tns:ConsultarClienteFacturasResponse"/>
+  </wsdl:message>
+
+  <wsdl:message name="SapEstudioFaultMessage">
+    <wsdl:part name="fault" element="tns:SapEstudioFault"/>
+  </wsdl:message>
+
+  <wsdl:portType name="SapEstudioClientesFacturasPortType">
+    <wsdl:operation name="ConsultarClienteFacturas">
+      <wsdl:input message="tns:ConsultarClienteFacturasInput"/>
+      <wsdl:output message="tns:ConsultarClienteFacturasOutput"/>
+      <wsdl:fault name="SapEstudioFault" message="tns:SapEstudioFaultMessage"/>
+    </wsdl:operation>
+  </wsdl:portType>
+
+  <wsdl:binding name="SapEstudioClientesFacturasBinding" type="tns:SapEstudioClientesFacturasPortType">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="ConsultarClienteFacturas">
+      <soap:operation soapAction="urn:sap-estudio:clientes-facturas:ConsultarClienteFacturas"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="SapEstudioFault">
+        <soap:fault name="SapEstudioFault" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+  </wsdl:binding>
+
+  <wsdl:service name="SapEstudioClientesFacturasService">
+    <wsdl:documentation>
+      Servicio SOAP para consultar clientes y sus facturas enviadas desde SAP ECC.
+      La direccion del endpoint debe ajustarse segun el binding publicado en SOAMANAGER o SAP BTP.
+    </wsdl:documentation>
+    <wsdl:port name="SapEstudioClientesFacturasPort" binding="tns:SapEstudioClientesFacturasBinding">
+      <soap:address location="https://example.com/sap/bc/srt/rfc/sap/zfm_sap_estudio_datos"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

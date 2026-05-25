@@ -1,0 +1,2 @@
+periodo,id_celda,codigo_cliente_sap,codigo_material_sap,pais,sociedad_sap,ventas_repuestos,ventas_servicios,ventas_arriendos,ventas_equipos_nuevos,costo_administracion_ventas,ratio_absorcion,moneda
+2021-01,CEL-0001,1000000001,MAT-00000001,Chile,CL01,0,0,0,0,0,0,CLP

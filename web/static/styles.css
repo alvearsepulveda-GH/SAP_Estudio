@@ -9,8 +9,14 @@ body {
   margin: 0;
 }
 
+select,
+input,
+button {
+  min-height: 42px;
+}
+
 .layout {
-  max-width: 1180px;
+  max-width: 1320px;
   margin: 0 auto;
   padding: 32px 20px;
 }
@@ -37,12 +43,20 @@ h1 {
   line-height: 1.15;
 }
 
-.search {
-  display: flex;
+.source {
+  color: #52616f;
+  margin: 8px 0 0;
+}
+
+.filters {
+  display: grid;
+  grid-template-columns: minmax(180px, 1.4fr) repeat(4, minmax(130px, 1fr)) auto;
   gap: 8px;
+  max-width: 920px;
 }
 
 input,
+select,
 button {
   border: 1px solid #c8d1da;
   border-radius: 6px;
@@ -60,7 +74,7 @@ button {
 
 .summary {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 12px;
   margin-bottom: 20px;
 }
@@ -81,6 +95,85 @@ button {
 
 .summary strong {
   font-size: 24px;
+}
+
+.chart-section {
+  background: white;
+  border: 1px solid #d9e1e8;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  padding: 18px;
+}
+
+.section-heading {
+  align-items: baseline;
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.section-heading h2 {
+  font-size: 18px;
+  line-height: 1.25;
+  margin: 0;
+}
+
+.section-heading span {
+  color: #52616f;
+  font-size: 13px;
+}
+
+.bar-chart {
+  display: grid;
+  gap: 14px;
+}
+
+.bar-row {
+  align-items: center;
+  display: grid;
+  grid-template-columns: minmax(180px, 260px) minmax(180px, 1fr) minmax(90px, auto);
+  gap: 14px;
+}
+
+.bar-label {
+  display: grid;
+  gap: 3px;
+}
+
+.bar-label strong {
+  color: #17202a;
+  font-size: 14px;
+}
+
+.bar-label span {
+  color: #52616f;
+  font-size: 12px;
+}
+
+.bar-track {
+  background: #e6ebf0;
+  border-radius: 999px;
+  height: 14px;
+  overflow: hidden;
+}
+
+.bar-fill {
+  background: #2f7d62;
+  border-radius: inherit;
+  height: 100%;
+}
+
+.bar-value {
+  color: #293747;
+  font-size: 13px;
+  font-weight: 700;
+  text-align: right;
+}
+
+.empty {
+  color: #52616f;
+  margin: 0;
 }
 
 .table-wrap {
@@ -115,8 +208,32 @@ th {
     flex-direction: column;
   }
 
-  .search,
+  .filters,
   .summary {
     grid-template-columns: 1fr;
+  }
+
+  .section-heading,
+  .bar-row {
+    align-items: stretch;
+    grid-template-columns: 1fr;
+  }
+
+  .section-heading {
+    display: grid;
+  }
+
+  .bar-value {
+    text-align: left;
+  }
+}
+
+@media (min-width: 721px) and (max-width: 1100px) {
+  .filters {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .summary {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }

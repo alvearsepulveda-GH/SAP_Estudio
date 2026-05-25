@@ -1,0 +1,2 @@
+id_celda,id_cliente,id_producto_equipo,codigo_cliente_sap,codigo_material_sap,pais,sociedad_sap,familia_producto,subfamilia_producto,estado_ciclo_vida,activo_desde,activo_hasta
+CEL-0001,CLI-0001,PROD-0001,1000000001,MAT-00000001,Chile,CL01,Motores,Motores estaticos,En servicio,2021-01-01,

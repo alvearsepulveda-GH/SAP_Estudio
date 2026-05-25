@@ -1,0 +1,3 @@
+id_producto_equipo,codigo_material_sap,descripcion_material,familia_producto,subfamilia_producto,linea_negocio,tipo_equipo,modelo,equipo_nuevo_o_base_instalada,estado_ciclo_vida,vida_util_esperada_meses
+PROD-0001,MAT-00000001,Motor ejemplo,Motores,Motores estaticos,Repuestos,Motor,Modelo ejemplo,Base instalada,En servicio,120
+PROD-0002,MAT-00000002,Generador ejemplo,Generadores,Generadores diesel,Equipos,Generador,Modelo ejemplo,Vendido actual,Nuevo,120

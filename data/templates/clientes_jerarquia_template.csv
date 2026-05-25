@@ -1,0 +1,2 @@
+id_cliente,codigo_cliente_sap,nombre_cliente,pais,sociedad_sap,industria,grupo_economico,segmento,faena_operacion,region,ciudad,estado_cliente,fecha_inicio_relacion
+CLI-0001,1000000001,Cliente ejemplo,Chile,CL01,Mineria,Grupo ejemplo,Gran cuenta,Faena ejemplo,Antofagasta,Antofagasta,Activo,2021-01-01

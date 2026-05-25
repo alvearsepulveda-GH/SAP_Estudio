@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>SAP Estudio</title>
+    <title>SAP Estudio - Resiliencia Financiera</title>
     <link rel="stylesheet" href="/static/styles.css">
   </head>
   <body>
@@ -11,10 +11,25 @@
       <header class="header">
         <div>
           <p class="eyebrow">SAP Estudio</p>
-          <h1>Documentos enviados a clientes</h1>
+          <h1>Resiliencia financiera por cliente y equipo</h1>
+          <p class="source">Fuente: {{ source_name }}</p>
         </div>
-        <form class="search" method="get">
-          <input name="cliente" value="{{ cliente }}" placeholder="Buscar cliente">
+        <form class="filters" method="get">
+          <input name="cliente" value="{{ cliente }}" placeholder="Cliente o codigo SAP">
+          <select name="pais">
+            <option value="">Todos los paises</option>
+            {% for item in paises %}
+            <option value="{{ item }}" {% if item == pais %}selected{% endif %}>{{ item }}</option>
+            {% endfor %}
+          </select>
+          <select name="familia">
+            <option value="">Todas las familias</option>
+            {% for item in familias %}
+            <option value="{{ item }}" {% if item == familia %}selected{% endif %}>{{ item }}</option>
+            {% endfor %}
+          </select>
+          <input name="periodo_desde" value="{{ periodo_desde }}" placeholder="Desde YYYY-MM">
+          <input name="periodo_hasta" value="{{ periodo_hasta }}" placeholder="Hasta YYYY-MM">
           <button type="submit">Buscar</button>
         </form>
       </header>
@@ -22,11 +37,43 @@
       <section class="summary">
         <div>
           <span class="label">Clientes</span>
-          <strong>{{ clientes | length }}</strong>
+          <strong>{{ summary.clientes }}</strong>
         </div>
         <div>
-          <span class="label">Documentos visibles</span>
-          <strong>{{ facturas | length }}</strong>
+          <span class="label">Celdas</span>
+          <strong>{{ summary.celdas }}</strong>
+        </div>
+        <div>
+          <span class="label">Ventas absorbentes</span>
+          <strong>{{ summary.ventas_absorbentes }}</strong>
+        </div>
+        <div>
+          <span class="label">Ratio absorcion</span>
+          <strong>{{ summary.ratio_absorcion }}</strong>
+        </div>
+      </section>
+
+      <section class="chart-section">
+        <div class="section-heading">
+          <h2>Ventas absorbentes por grupo de productos</h2>
+          <span>Repuestos + servicios + arriendos</span>
+        </div>
+        <div class="bar-chart">
+          {% for item in product_chart %}
+          <div class="bar-row">
+            <div class="bar-label">
+              <strong>{{ item.familia_producto }}</strong>
+              <span>{{ item.celdas }} celdas · Ratio {{ item.ratio_absorcion }}</span>
+            </div>
+            <div class="bar-track" aria-label="{{ item.familia_producto }} {{ item.ventas_absorbentes }}">
+              <div class="bar-fill" style="width: {{ item.width }}"></div>
+            </div>
+            <div class="bar-value">{{ item.ventas_absorbentes }}</div>
+          </div>
+          {% endfor %}
+          {% if product_chart | length == 0 %}
+          <p class="empty">No hay datos para graficar con los filtros seleccionados.</p>
+          {% endif %}
         </div>
       </section>
 
@@ -40,13 +87,18 @@
             </tr>
           </thead>
           <tbody>
-            {% for factura in facturas %}
+            {% for record in records %}
             <tr>
               {% for column in columns %}
-              <td>{{ factura[column] }}</td>
+              <td>{{ record[column] }}</td>
               {% endfor %}
             </tr>
             {% endfor %}
+            {% if records | length == 0 %}
+            <tr>
+              <td colspan="{{ columns | length }}">No hay datos para los filtros seleccionados.</td>
+            </tr>
+            {% endif %}
           </tbody>
         </table>
       </section>

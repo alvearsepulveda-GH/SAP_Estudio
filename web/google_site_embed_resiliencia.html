@@ -1,0 +1,754 @@
+  <!doctype html>
+  <html lang="es">
+    <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Resiliencia financiera Chile</title>
+    <!-- Version 2026-05-25b: RAPV en porcentaje, calculado desde margen/GAV o desde ratio_absorcion publicado -->
+      <style>
+        :root {
+          color-scheme: light;
+          font-family: Inter, Arial, sans-serif;
+          --bg: #f4f6f8;
+          --panel: #ffffff;
+          --line: #d9e1e8;
+          --text: #17202a;
+          --muted: #52616f;
+          --blue: #1f6feb;
+          --green: #2f7d62;
+          --amber: #b7791f;
+          --red: #b42318;
+        }
+
+        * {
+          box-sizing: border-box;
+        }
+
+        body {
+          background: var(--bg);
+          color: var(--text);
+          margin: 0;
+        }
+
+        .app {
+          margin: 0 auto;
+          max-width: 1220px;
+          padding: 24px 16px;
+        }
+
+        .header {
+          align-items: end;
+          display: flex;
+          justify-content: space-between;
+          gap: 16px;
+          margin-bottom: 18px;
+        }
+
+        .eyebrow {
+          color: var(--muted);
+          font-size: 13px;
+          font-weight: 700;
+          margin: 0 0 6px;
+          text-transform: uppercase;
+        }
+
+        h1 {
+          font-size: 28px;
+          line-height: 1.15;
+          margin: 0;
+        }
+
+        .source {
+          color: var(--muted);
+          font-size: 13px;
+          margin: 8px 0 0;
+        }
+
+        .controls,
+        .panel {
+          background: var(--panel);
+          border: 1px solid var(--line);
+          border-radius: 8px;
+        }
+
+        .controls {
+          display: grid;
+          gap: 10px;
+          grid-template-columns: minmax(170px, 1.4fr) repeat(3, minmax(130px, 1fr)) auto;
+          margin-bottom: 14px;
+          padding: 14px;
+        }
+
+        input,
+        select,
+        button {
+          border: 1px solid #c8d1da;
+          border-radius: 6px;
+          font: inherit;
+          min-height: 40px;
+          padding: 9px 11px;
+        }
+
+        button {
+          background: var(--blue);
+          border-color: var(--blue);
+          color: white;
+          cursor: pointer;
+          font-weight: 700;
+        }
+
+        .summary {
+          display: grid;
+          gap: 12px;
+          grid-template-columns: repeat(4, minmax(0, 1fr));
+          margin-bottom: 14px;
+        }
+
+        .summary > div {
+          background: var(--panel);
+          border: 1px solid var(--line);
+          border-radius: 8px;
+          padding: 14px;
+        }
+
+        .label {
+          color: var(--muted);
+          display: block;
+          font-size: 12px;
+          margin-bottom: 5px;
+        }
+
+        .summary strong {
+          font-size: 22px;
+        }
+
+        .grid {
+          display: grid;
+          gap: 14px;
+          grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+          margin-bottom: 14px;
+        }
+
+        .panel {
+          padding: 16px;
+        }
+
+        .panel h2 {
+          font-size: 17px;
+          margin: 0 0 12px;
+        }
+
+        .bars {
+          display: grid;
+          gap: 12px;
+        }
+
+        .bar-row {
+          display: grid;
+          gap: 8px;
+        }
+
+        .bar-meta {
+          align-items: baseline;
+          display: flex;
+          justify-content: space-between;
+          gap: 12px;
+        }
+
+        .bar-meta span {
+          color: var(--muted);
+          font-size: 12px;
+        }
+
+        .bar-track {
+          background: #e6ebf0;
+          border-radius: 999px;
+          height: 14px;
+          overflow: hidden;
+        }
+
+        .bar-fill {
+          background: var(--green);
+          border-radius: inherit;
+          height: 100%;
+        }
+
+        .table-wrap {
+          background: var(--panel);
+          border: 1px solid var(--line);
+          border-radius: 8px;
+          margin-bottom: 14px;
+          overflow: auto;
+        }
+
+        table {
+          border-collapse: collapse;
+          min-width: 100%;
+        }
+
+        th,
+        td {
+          border-bottom: 1px solid #e6ebf0;
+          font-size: 13px;
+          padding: 9px 10px;
+          text-align: left;
+          white-space: nowrap;
+        }
+
+        th {
+          background: #eef3f8;
+          color: #293747;
+          font-weight: 700;
+        }
+
+        .status {
+          border-radius: 999px;
+          display: inline-block;
+          font-size: 12px;
+          font-weight: 700;
+          padding: 3px 8px;
+        }
+
+        .status-ok {
+          background: #eaf7f1;
+          color: var(--green);
+        }
+
+        .status-alert {
+          background: #fff7e6;
+          color: var(--amber);
+        }
+
+        .status-risk {
+          background: #fff1f0;
+          color: var(--red);
+        }
+
+        .matrix-wrap {
+          background: var(--panel);
+          border: 1px solid var(--line);
+          border-radius: 8px;
+          margin-bottom: 14px;
+          overflow: auto;
+          padding: 16px;
+        }
+
+        .matrix-wrap h2 {
+          font-size: 17px;
+          margin: 0 0 4px;
+        }
+
+        .matrix-wrap .note {
+          margin-bottom: 14px;
+        }
+
+        .matrix-table {
+          border-collapse: separate;
+          border-spacing: 0;
+          min-width: 860px;
+          width: 100%;
+        }
+
+        .matrix-table th,
+        .matrix-table td {
+          border-bottom: 1px solid #e6ebf0;
+          border-right: 1px solid #e6ebf0;
+          padding: 10px;
+          text-align: center;
+          white-space: normal;
+        }
+
+        .matrix-table th:first-child,
+        .matrix-table td:first-child {
+          left: 0;
+          position: sticky;
+          text-align: left;
+          z-index: 1;
+        }
+
+        .matrix-table th:first-child {
+          background: #eef3f8;
+          z-index: 2;
+        }
+
+        .matrix-table td:first-child {
+          background: white;
+          font-weight: 700;
+        }
+
+        .matrix-cell {
+          border-radius: 6px;
+          display: grid;
+          gap: 2px;
+          min-width: 120px;
+          padding: 8px;
+        }
+
+        .matrix-good {
+          background: #eaf7f1;
+          color: var(--green);
+        }
+
+        .matrix-watch {
+          background: #fff7e6;
+          color: var(--amber);
+        }
+
+        .matrix-risk {
+          background: #fff1f0;
+          color: var(--red);
+        }
+
+        .matrix-empty {
+          background: #f4f6f8;
+          color: var(--muted);
+        }
+
+        .matrix-cell strong {
+          font-size: 15px;
+        }
+
+        .matrix-cell span {
+          font-size: 11px;
+        }
+
+        .note {
+          color: var(--muted);
+          font-size: 13px;
+          line-height: 1.45;
+          margin: 0;
+        }
+
+        @media (max-width: 860px) {
+          .header,
+          .grid {
+            grid-template-columns: 1fr;
+          }
+
+          .header {
+            align-items: stretch;
+            display: grid;
+          }
+
+          .controls,
+          .summary {
+            grid-template-columns: 1fr;
+          }
+        }
+      </style>
+    </head>
+    <body>
+      <main class="app">
+        <header class="header">
+          <div>
+            <p class="eyebrow">MAFI USACH</p>
+            <h1>Resiliencia financiera Chile</h1>
+            <p class="source" id="sourceLabel">Fuente: esperando datos</p>
+          </div>
+        </header>
+
+        <section class="controls">
+          <input id="clientFilter" placeholder="Cliente o codigo SAP">
+          <select id="familyFilter">
+            <option value="">Todos los grupos</option>
+          </select>
+          <input id="fromFilter" placeholder="Desde YYYY-MM" value="2020-01">
+          <input id="toFilter" placeholder="Hasta YYYY-MM" value="2025-12">
+          <button id="applyButton" type="button">Filtrar</button>
+        </section>
+
+        <section class="summary">
+          <div>
+            <span class="label">Clientes</span>
+            <strong id="kpiClients">0</strong>
+          </div>
+          <div>
+            <span class="label">Segmentos</span>
+            <strong id="kpiCells">0</strong>
+          </div>
+          <div>
+            <span class="label">RAPV</span>
+            <strong id="kpiRapv">0.00</strong>
+          </div>
+          <div>
+            <span class="label">DOS promedio</span>
+            <strong id="kpiDos">0</strong>
+          </div>
+        </section>
+
+        <section class="grid">
+          <div class="panel">
+            <h2>RAPV por grupo de equipos</h2>
+            <div class="bars" id="familyBars"></div>
+          </div>
+          <div class="panel">
+            <h2>Lectura del indicador</h2>
+            <p class="note">
+              RAPV = margen post-venta / GAV asignado. Un RAPV mayor a 1 indica que
+              la post-venta cubre la estructura asignada. DOS muestra la velocidad
+              de recuperacion de caja; menor DOS implica cobranza mas alineada.
+            </p>
+          </div>
+        </section>
+
+        <section class="matrix-wrap">
+          <h2>Matriz RAPV: agrupacion de clientes x agrupacion de productos</h2>
+          <p class="note">Eje X: grupos de productos/equipos. Eje Y: agrupacion de clientes por industria. Cada segmento muestra RAPV y DOS promedio.</p>
+          <div id="matrixContainer"></div>
+        </section>
+
+        <section class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Periodo</th>
+                <th>Cliente</th>
+                <th>Grupo equipo</th>
+                <th>Subfamilia</th>
+                <th>Estado</th>
+                <th>Margen post-venta</th>
+                <th>GAV asignado</th>
+                <th>RAPV</th>
+                <th>DOS</th>
+                <th>Cobranza</th>
+              </tr>
+            </thead>
+            <tbody id="detailRows"></tbody>
+          </table>
+        </section>
+      </main>
+
+      <script>
+        const CONFIG = {
+          // Pega aqui el ID o la URL de tu Google Sheet propio.
+          // Ejemplo: https://docs.google.com/spreadsheets/d/ESTE_ES_EL_ID/edit
+          spreadsheetId: "1c7ZD-bHlfkdCR1TnFWqfV9cJ4LMWBNTN",
+          baseSheetName: "base_mensual"
+        };
+
+        let baseRows = [];
+
+      const fmtMoney = new Intl.NumberFormat("es-CL", {
+        maximumFractionDigits: 0
+      });
+
+      const fmtPercent = new Intl.NumberFormat("es-CL", {
+        maximumFractionDigits: 2,
+        minimumFractionDigits: 2,
+        style: "percent"
+      });
+
+        const byId = (id) => document.getElementById(id);
+
+        function resolveSpreadsheetId(value) {
+          const text = String(value || "").trim();
+          const match = text.match(/\/spreadsheets\/d\/([^/]+)/);
+          return match ? match[1] : text;
+        }
+
+        function parseCsv(text) {
+          const rows = [];
+          let row = [];
+          let cell = "";
+          let quoted = false;
+
+          for (let i = 0; i < text.length; i += 1) {
+            const char = text[i];
+            const next = text[i + 1];
+
+            if (char === '"' && quoted && next === '"') {
+              cell += '"';
+              i += 1;
+            } else if (char === '"') {
+              quoted = !quoted;
+            } else if (char === "," && !quoted) {
+              row.push(cell);
+              cell = "";
+            } else if ((char === "\n" || char === "\r") && !quoted) {
+              if (cell || row.length) {
+                row.push(cell);
+                rows.push(row);
+                row = [];
+                cell = "";
+              }
+              if (char === "\r" && next === "\n") i += 1;
+            } else {
+              cell += char;
+            }
+          }
+
+          if (cell || row.length) {
+            row.push(cell);
+            rows.push(row);
+          }
+
+          const headers = (rows.shift() || []).map((header) => String(header || "").trim().replace(/^\uFEFF/, ""));
+          return rows.map((values) => Object.fromEntries(headers.map((h, i) => [h, values[i] || ""])));
+        }
+
+        function rowValue(row, keys) {
+          const options = Array.isArray(keys) ? keys : [keys];
+          const found = options.find((key) => row[key] !== undefined && String(row[key]).trim() !== "");
+          return found ? row[found] : "";
+        }
+
+        function validateMatrixColumns(rows) {
+          const columns = rows[0] ? Object.keys(rows[0]) : [];
+          const required = ["industria", "familia_producto", "dos"];
+          const missing = required.filter((column) => !columns.includes(column));
+          const hasMarginAndGav = columns.includes("margen_postventa") && columns.includes("gav_asignado");
+          const hasRapv = columns.includes("ratio_absorcion") || columns.includes("RAPV") || columns.includes("rapv");
+
+          if (missing.length || (!hasMarginAndGav && !hasRapv)) {
+            const metric = hasMarginAndGav || hasRapv ? [] : ["margen_postventa + gav_asignado o ratio_absorcion"];
+            throw new Error(`La hoja ${CONFIG.baseSheetName} no tiene las columnas requeridas para la matriz RAPV: ${missing.concat(metric).join(", ")}.`);
+          }
+        }
+
+        async function loadFromGoogleSheet() {
+          const spreadsheetId = resolveSpreadsheetId(CONFIG.spreadsheetId);
+          if (!spreadsheetId || spreadsheetId.includes("PEGAR_ID")) {
+            throw new Error("Configura el ID de tu Google Sheet.");
+          }
+
+          const url = `https://docs.google.com/spreadsheets/d/${spreadsheetId}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(CONFIG.baseSheetName)}`;
+          const response = await fetch(url);
+          if (!response.ok) throw new Error("No se pudo leer el Google Sheet. Revisa permisos o publica la hoja.");
+          return parseCsv(await response.text());
+        }
+
+        function numberValue(row, keys) {
+          const raw = String(rowValue(row, keys)).trim();
+          if (!raw) return 0;
+
+          const isPercent = raw.includes("%");
+          let value = raw.replace(/[^\d,.-]/g, "");
+          const commaCount = (value.match(/,/g) || []).length;
+          const dotCount = (value.match(/\./g) || []).length;
+
+          if (commaCount > 0 && dotCount > 0) {
+            const lastComma = value.lastIndexOf(",");
+            const lastDot = value.lastIndexOf(".");
+            if (lastComma > lastDot) {
+              value = value.replace(/\./g, "").replace(",", ".");
+            } else {
+              value = value.replace(/,/g, "");
+            }
+          } else if (commaCount > 1) {
+            value = value.replace(/,/g, "");
+          } else if (dotCount > 1) {
+            value = value.replace(/\./g, "");
+          } else if (commaCount === 1) {
+            const decimals = value.length - value.lastIndexOf(",") - 1;
+            value = decimals === 3 ? value.replace(/,/g, "") : value.replace(",", ".");
+          }
+
+          const parsed = Number(value) || 0;
+          return isPercent ? parsed / 100 : parsed;
+        }
+
+        function normalizeRows(rows) {
+          return rows.map((row) => {
+            const margen = numberValue(row, ["margen_postventa", "margen postventa", "margen_post_venta"]);
+            const gav = numberValue(row, ["gav_asignado", "GAV", "gav", "costo_administracion_ventas"]);
+            const ratio = numberValue(row, ["ratio_absorcion", "RAPV", "rapv", "ratio absorcion"]);
+            const ratioCalculado = gav && margen ? margen / gav : ratio;
+            return {
+              periodo: String(row.periodo || ""),
+              codigo_cliente_sap: String(row.codigo_cliente_sap || ""),
+              nombre_cliente: String(row.nombre_cliente || ""),
+              id_celda: String(row.id_celda || ""),
+              familia_producto: String(row.familia_producto || ""),
+              subfamilia_producto: String(row.subfamilia_producto || ""),
+              estado_ciclo_vida: String(row.estado_ciclo_vida || ""),
+              comercializacion_equipo: String(row.comercializacion_equipo || ""),
+              margen_postventa: margen,
+              gav_asignado: gav,
+              ratio_absorcion: ratioCalculado,
+              dos: numberValue(row, ["dos", "DOS"]),
+              industria: String(row.industria || row.grupo_economico || "Sin agrupacion"),
+              cobranza_alineada: String(row.cobranza_alineada || "")
+            };
+          });
+        }
+
+        function filteredRows() {
+          const client = byId("clientFilter").value.trim().toLowerCase();
+          const family = byId("familyFilter").value;
+          const from = byId("fromFilter").value.trim();
+          const to = byId("toFilter").value.trim();
+
+          return baseRows.filter((row) => {
+            const matchesClient = !client
+              || row.nombre_cliente.toLowerCase().includes(client)
+              || row.codigo_cliente_sap.toLowerCase().includes(client);
+            const matchesFamily = !family || row.familia_producto === family;
+            const matchesFrom = !from || row.periodo >= from;
+            const matchesTo = !to || row.periodo <= to;
+            return matchesClient && matchesFamily && matchesFrom && matchesTo;
+          });
+        }
+
+        function refreshFamilyOptions() {
+          const current = byId("familyFilter").value;
+          const families = [...new Set(baseRows.map((row) => row.familia_producto).filter(Boolean))].sort();
+          byId("familyFilter").innerHTML = '<option value="">Todos los grupos</option>'
+            + families.map((item) => `<option value="${item}">${item}</option>`).join("");
+          byId("familyFilter").value = current;
+        }
+
+        function render() {
+          const rows = filteredRows();
+          const clients = new Set(rows.map((row) => row.codigo_cliente_sap));
+          const cells = new Set(rows.map((row) => row.id_celda));
+          const margin = rows.reduce((sum, row) => sum + row.margen_postventa, 0);
+          const gav = rows.reduce((sum, row) => sum + row.gav_asignado, 0);
+          const dos = rows.length ? rows.reduce((sum, row) => sum + row.dos, 0) / rows.length : 0;
+          const rapv = gav ? margin / gav : rows.length ? rows.reduce((sum, row) => sum + row.ratio_absorcion, 0) / rows.length : 0;
+
+          byId("kpiClients").textContent = clients.size;
+          byId("kpiCells").textContent = cells.size;
+          byId("kpiRapv").textContent = fmtPercent.format(rapv);
+          byId("kpiDos").textContent = dos.toFixed(0);
+
+          renderBars(rows);
+          renderMatrix(rows);
+          renderTable(rows);
+        }
+
+        function renderBars(rows) {
+          const grouped = new Map();
+          rows.forEach((row) => {
+            const key = row.familia_producto || "Sin grupo";
+            const item = grouped.get(key) || { margin: 0, gav: 0, dos: 0, rapv: 0, count: 0 };
+            item.margin += row.margen_postventa;
+            item.gav += row.gav_asignado;
+            item.dos += row.dos;
+            item.rapv += row.ratio_absorcion;
+            item.count += 1;
+            grouped.set(key, item);
+          });
+
+          const data = [...grouped.entries()].map(([family, item]) => ({
+            family,
+            rapv: item.gav ? item.margin / item.gav : item.count ? item.rapv / item.count : 0,
+            margin: item.margin,
+            dos: item.count ? item.dos / item.count : 0
+          })).sort((a, b) => b.rapv - a.rapv);
+
+          const max = Math.max(1, ...data.map((item) => item.rapv));
+          byId("familyBars").innerHTML = data.map((item) => {
+            const width = Math.max(4, item.rapv / max * 100);
+            return `
+              <div class="bar-row">
+                <div class="bar-meta">
+                  <strong>${item.family}</strong>
+                <span>RAPV ${fmtPercent.format(item.rapv)} · DOS ${item.dos.toFixed(0)} · ${fmtMoney.format(item.margin)}</span>
+                </div>
+                <div class="bar-track"><div class="bar-fill" style="width: ${width}%"></div></div>
+              </div>
+            `;
+          }).join("") || '<p class="note">No hay datos para los filtros seleccionados.</p>';
+        }
+
+        function renderTable(rows) {
+          byId("detailRows").innerHTML = rows.slice(0, 300).map((row) => {
+            const statusClass = row.ratio_absorcion >= 1 ? "status-ok" : row.dos <= 65 ? "status-alert" : "status-risk";
+            return `
+              <tr>
+                <td>${row.periodo}</td>
+                <td>${row.nombre_cliente}</td>
+                <td>${row.familia_producto}</td>
+                <td>${row.subfamilia_producto}</td>
+                <td>${row.estado_ciclo_vida}</td>
+                <td>${fmtMoney.format(row.margen_postventa)}</td>
+                <td>${fmtMoney.format(row.gav_asignado)}</td>
+                <td>${fmtPercent.format(row.ratio_absorcion)}</td>
+                <td>${row.dos.toFixed(0)}</td>
+                <td><span class="status ${statusClass}">${row.cobranza_alineada || "Revisar"}</span></td>
+              </tr>
+            `;
+          }).join("") || '<tr><td colspan="10">No hay datos para los filtros seleccionados.</td></tr>';
+        }
+
+        function renderMatrix(rows) {
+          if (!rows.length) {
+            byId("matrixContainer").innerHTML = '<p class="note">No hay datos para construir la matriz con los filtros seleccionados.</p>';
+            return;
+          }
+
+          const yGroups = [...new Set(rows.map((row) => row.industria || "Sin agrupacion"))].sort();
+          const xGroups = [...new Set(rows.map((row) => row.familia_producto || "Sin grupo"))].sort();
+          const map = new Map();
+
+          rows.forEach((row) => {
+            const key = `${row.industria || "Sin agrupacion"}|||${row.familia_producto || "Sin grupo"}`;
+            const item = map.get(key) || { margin: 0, gav: 0, dos: 0, rapv: 0, count: 0 };
+            item.margin += row.margen_postventa;
+            item.gav += row.gav_asignado;
+            item.dos += row.dos;
+            item.rapv += row.ratio_absorcion;
+            item.count += 1;
+            map.set(key, item);
+          });
+
+          const header = `
+            <tr>
+              <th>Agrupacion clientes</th>
+              ${xGroups.map((group) => `<th>${group}</th>`).join("")}
+            </tr>
+          `;
+
+          const body = yGroups.map((yGroup) => {
+            const cells = xGroups.map((xGroup) => {
+              const item = map.get(`${yGroup}|||${xGroup}`);
+              if (!item) {
+                return '<td><div class="matrix-cell matrix-empty"><strong>-</strong><span>Sin datos</span></div></td>';
+              }
+              const rapv = item.gav ? item.margin / item.gav : item.count ? item.rapv / item.count : 0;
+              const dos = item.count ? item.dos / item.count : 0;
+              const className = rapv >= 1 && dos <= 65
+                ? "matrix-good"
+                : rapv >= 0.7 || dos <= 65
+                  ? "matrix-watch"
+                  : "matrix-risk";
+              return `
+                <td>
+                  <div class="matrix-cell ${className}">
+                    <strong>${fmtPercent.format(rapv)}</strong>
+                    <span>DOS ${dos.toFixed(0)}</span>
+                  </div>
+                </td>
+              `;
+            }).join("");
+            return `<tr><td>${yGroup}</td>${cells}</tr>`;
+          }).join("");
+
+          byId("matrixContainer").innerHTML = `
+            <table class="matrix-table">
+              <thead>${header}</thead>
+              <tbody>${body}</tbody>
+            </table>
+          `;
+        }
+
+        async function init() {
+          byId("applyButton").addEventListener("click", render);
+          byId("familyFilter").addEventListener("change", render);
+
+          try {
+            const rows = await loadFromGoogleSheet();
+            validateMatrixColumns(rows);
+            baseRows = normalizeRows(rows);
+            byId("sourceLabel").textContent = "Fuente: Google Sheet";
+            refreshFamilyOptions();
+            render();
+          } catch (error) {
+            byId("sourceLabel").textContent = `${error.message} Revisa que el Google Sheet este publicado o compartido para lectura.`;
+          }
+        }
+
+        init();
+      </script>
+    </body>
+  </html>
